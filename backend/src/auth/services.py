@@ -1,3 +1,4 @@
+import os
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -22,8 +23,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-SECRET_KEY = "your-super-secret-key"  # Ideally should be loaded from env vars
-ALGORITHM = "HS256"
+SECRET_KEY = os.getenv("JWT_SECRET")  # Ideally should be loaded from env vars
+ALGORITHM = os.getenv("JWT_ALGORITHM")
 
 
 def create_token(user_id: str, email: str, expires_delta: timedelta):

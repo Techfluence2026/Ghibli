@@ -1,16 +1,17 @@
 import uvicorn
-from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from auth.router import router as auth_router
-from db.db import ping
+from prescriptions.router import router as prescriptions_router
+from reports.router import router as reports_router
 
-load_dotenv()
+from db.db import ping
 
 app = FastAPI()
 
 app.include_router(auth_router)
-
+app.include_router(prescriptions_router)
+app.include_router(reports_router)
 
 @app.get(path="/health", status_code=200)
 def health() -> str:

@@ -2,22 +2,21 @@ from datetime import datetime
 from typing import List
 from uuid import UUID, uuid4
 
-
-class Medicine:
+class Test:
     name: str
-    dose: str
-    rate: str
-
+    result: str
+    unit: str
+    reference_range: str
 
 class Report:
     id: UUID
     patient_id: UUID
     patient_name: str
-    disease_date: str
     url: str
-    medications: List[Medicine]
+    tests: List[Test]
+    doctor: str
+    lab_no: str
     status: str
-    doctors_remark: str
     created_at: datetime
 
     def __init__(self):

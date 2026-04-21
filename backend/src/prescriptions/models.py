@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 class Medicine:
     name: str
     dose: str
-    rate: str
+    frequency: str
 
 
 class Prescription:
