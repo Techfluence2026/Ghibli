@@ -1,9 +1,9 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import Any, List, Optional
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class ReportStatus(str, Enum):
@@ -15,9 +15,18 @@ class ReportStatus(str, Enum):
 
 class TestSchema(BaseModel):
     name: str = Field(..., example="Haemoglobin")
-    result: str = Field(..., example="13.5")
-    unit: str = Field(..., example="g/dL")
-    reference_range: str = Field(..., example="12.0 - 17.0")
+    result: Optional[str] = Field(None, example="13.5")
+    unit: Optional[str] = Field(None, example="g/dL")
+    reference_range: Optional[str] = Field(None, example="12.0 - 17.0")
+
+    @field_validator("reference_range", mode="before")
+    @classmethod
+    def coerce_to_string(cls, v: Any) -> Optional[str]:
+        if v is None:
+            return None
+        if isinstance(v, dict):
+            return ", ".join(f"{k}: {val}" for k, val in v.items())
+        return str(v)
 
 
 # ---- inbound ----------------------------------------------------------------
