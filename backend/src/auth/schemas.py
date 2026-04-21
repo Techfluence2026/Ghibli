@@ -1,29 +1,35 @@
-from pydantic import UUID, BaseModel, EmailStr, datetime
+from datetime import datetime
+
+from pydantic import UUID4, BaseModel, EmailStr
 
 
-class User(BaseModel):
+class SigninRequest(BaseModel):
     username: str
     email: EmailStr
     password: str
-    age: int
     phone: str
 
 
-class Session(BaseModel):
-    pass
-
-
-class SigninRequest(User):
-    pass
-
-
-class SigninResponse(User):
-    id: UUID
+class SigninResponse(BaseModel):
+    id: UUID4
+    username: str
+    email: EmailStr
+    phone: str
 
 
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+
+
+class UserSchema(BaseModel):
+    id: UUID4
+    username: str
+    email: EmailStr
+    phone: str
+
+    class Config:
+        from_attributes = True
 
 
 class LoginResponse(BaseModel):
@@ -32,7 +38,7 @@ class LoginResponse(BaseModel):
     access_token_expires_at: datetime
     refresh_token: str
     refresh_token_expires_at: datetime
-    user: User
+    user: UserSchema
 
 
 class RenewAccessTokenRequest(BaseModel):

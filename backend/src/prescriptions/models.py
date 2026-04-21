@@ -9,7 +9,7 @@ class Medicine:
     rate: str
 
 
-class Report:
+class Prescription:
     id: UUID
     patient_id: UUID
     patient_name: str

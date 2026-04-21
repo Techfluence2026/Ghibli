@@ -1,7 +1,11 @@
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from auth.router import router as auth_router
+from db.db import ping
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -10,6 +14,7 @@ app.include_router(auth_router)
 
 @app.get(path="/health", status_code=200)
 def health() -> str:
+    ping()
     return "OK"
 
 
