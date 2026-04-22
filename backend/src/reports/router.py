@@ -7,8 +7,8 @@ from fastapi import (APIRouter, BackgroundTasks, Depends, File, Form,
                      HTTPException, Query, UploadFile, status)
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from .schemas import (ReportCreateSchema, ReportResponseSchema, ReportStatus,
-                      ReportUpdateSchema)
+from .schemas import (ReportCreateSchema, ReportListItemSchema,
+                      ReportResponseSchema, ReportStatus, ReportUpdateSchema)
 from .services import (_extract_and_update, add_report_service,
                        delete_report_service, get_all_my_reports_service,
                        get_report_by_id_service, update_report_service)
@@ -81,7 +81,7 @@ def get_report_by_id(
 
 
 # GET /api/reports/
-@router.get("/", response_model=list[ReportResponseSchema])
+@router.get("/", response_model=list[ReportListItemSchema])
 def get_all_my_reports(
     report_status: Optional[ReportStatus] = Query(
         None, alias="status", description="processing | pending | reviewed | archived"

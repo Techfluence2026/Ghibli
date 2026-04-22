@@ -74,3 +74,19 @@ class ReportResponseSchema(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class ReportListItemSchema(BaseModel):
+    """Like ReportResponseSchema but omits file_data — used in list endpoints."""
+
+    id: UUID
+    patient_id: UUID
+    patient_name: str
+    url: Optional[str] = None
+    tests: Optional[List[TestSchema]] = None
+    doctor: Optional[str] = None
+    lab_no: Optional[str] = None
+    status: ReportStatus
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
