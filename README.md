@@ -1,6 +1,6 @@
 # MediSync
 
-> **🌐 FRONTEND DEPLOYED AT: [app.risb.xyz](https://app.risb.xyz)**
+> **🌐 FRONTEND DEPLOYED AT: [app.risb.xyz](app.risb.xyz)**
 
 MediSync is a full-stack healthcare management web application that lets patients securely manage prescriptions, lab reports, medications, and health metrics — all in one place. It features AI-powered OCR for document extraction, WhatsApp medication reminders via Twilio, and rich analytics dashboards.
 
