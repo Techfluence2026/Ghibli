@@ -84,4 +84,23 @@ export const reportsAPI = {
     api.delete(`/api/reports/delete/${id}`).then((r) => r.data),
 };
 
+// ─── Medications ───────────────────────────────────────────────────────────────
+export const medicationsAPI = {
+  /** GET /api/medications/ */
+  getAll: (params = {}) =>
+    api.get('/api/medications/', { params }).then((r) => r.data),
+
+  /** POST /api/medications/ */
+  add: (data) =>
+    api.post('/api/medications/', data).then((r) => r.data),
+
+  /** PUT /api/medications/{id} */
+  update: (id, data) =>
+    api.put(`/api/medications/${id}`, data).then((r) => r.data),
+
+  /** DELETE /api/medications/{id} */
+  delete: (id) =>
+    api.delete(`/api/medications/${id}`).then((r) => r.data),
+};
+
 export default api;

@@ -78,6 +78,7 @@ class UpdateUserDetailsSchemaRequest(BaseModel):
     blood_group: BloodGroup
     medical_history: Optional[str] = None
     allergies: Optional[List[str]] = None
+    timezone: Optional[str] = None
 
 
 class MeResponse(BaseModel):
@@ -93,6 +94,7 @@ class MeResponse(BaseModel):
     medical_history: Optional[str] = None
     allergies: Optional[List[str]] = None
     diseases: Optional[List[str]] = None
+    timezone: Optional[str] = None
 
     class Config:
         from_attributes = True

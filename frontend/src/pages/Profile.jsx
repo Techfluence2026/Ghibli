@@ -11,7 +11,7 @@ export default function Profile() {
   const { user, refreshUser } = useAuth();
   const [form, setForm] = useState({
     age: '', gender: '', height: '', weight: '', blood_group: '',
-    medical_history: '', allergies: '',
+    medical_history: '', allergies: '', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -27,6 +27,7 @@ export default function Profile() {
         blood_group: user.blood_group ?? '',
         medical_history: user.medical_history ?? '',
         allergies: Array.isArray(user.allergies) ? user.allergies.join(', ') : (user.allergies ?? ''),
+        timezone: user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
     }
   }, [user]);
@@ -52,6 +53,7 @@ export default function Profile() {
       blood_group: form.blood_group,
       medical_history: form.medical_history || null,
       allergies: allergiesList.length > 0 ? allergiesList : null,
+      timezone: form.timezone,
     };
 
     // Validate required fields
@@ -252,6 +254,22 @@ export default function Profile() {
                 value={form.medical_history}
                 onChange={set('medical_history')}
                 rows={4}
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="profile-timezone">
+                Timezone
+                <span className="profile-field-hint"> (For medication reminders)</span>
+              </label>
+              <input
+                id="profile-timezone"
+                className="form-input"
+                type="text"
+                placeholder="e.g. America/New_York"
+                value={form.timezone}
+                onChange={set('timezone')}
+                required
               />
             </div>
 

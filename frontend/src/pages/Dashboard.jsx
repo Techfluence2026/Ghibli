@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { reportsAPI } from '../api/client';
+import { reportsAPI, medicationsAPI } from '../api/client';
 import { getAlerts, formatDate, analyzeTest, severityClass } from '../api/health';
 import {
-  AlertTriangle, FileText, Upload, ChevronRight, Loader
+  AlertTriangle, FileText, Upload, ChevronRight, Loader, Pill, Trash2, Plus, Clock
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -205,7 +205,123 @@ export default function Dashboard() {
 
         {/* Summary generator */}
         <SummaryCard reports={reports} loading={loading} />
+        
+        {/* Medications Card */}
+        <MedicationsCard />
       </div>
+    </div>
+  );
+}
+
+function MedicationsCard() {
+  const [meds, setMeds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [newMed, setNewMed] = useState({ name: '', dose: '', times: '' });
+
+  useEffect(() => {
+    loadMeds();
+  }, []);
+
+  const loadMeds = () => {
+    setLoading(true);
+    medicationsAPI.getAll()
+      .then(setMeds)
+      .catch((e) => console.error('Failed to load meds:', e))
+      .finally(() => setLoading(false));
+  };
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (!newMed.name || !newMed.dose || !newMed.times) return;
+
+    // split times by comma and trim
+    const timesArray = newMed.times.split(',').map(t => t.trim()).filter(Boolean);
+    
+    try {
+      await medicationsAPI.add({
+        name: newMed.name,
+        dose: newMed.dose,
+        times: timesArray
+      });
+      setShowForm(false);
+      setNewMed({ name: '', dose: '', times: '' });
+      loadMeds();
+    } catch (e) {
+      console.error('Failed to add med:', e);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await medicationsAPI.delete(id);
+      setMeds(meds.filter(m => m.id !== id));
+    } catch (e) {
+      console.error('Failed to delete med:', e);
+    }
+  };
+
+  return (
+    <div className="card">
+      <div className="section-header">
+        <h2 className="section-title"><Pill size={18} style={{ marginRight: 8 }} /> My Medications</h2>
+        <button className="btn btn-ghost btn-sm" onClick={() => setShowForm(!showForm)}>
+          <Plus size={14} /> Add New
+        </button>
+      </div>
+
+      {showForm && (
+        <form onSubmit={handleAdd} className="auth-form" style={{ marginBottom: 20, padding: 15, background: 'var(--bg-secondary)', borderRadius: 'var(--radius)' }}>
+          <div className="form-group">
+            <label>Medication Name</label>
+            <input type="text" className="input" placeholder="e.g. Amoxicillin" value={newMed.name} onChange={e => setNewMed({...newMed, name: e.target.value})} required />
+          </div>
+          <div className="form-group">
+            <label>Dose</label>
+            <input type="text" className="input" placeholder="e.g. 500mg" value={newMed.dose} onChange={e => setNewMed({...newMed, dose: e.target.value})} required />
+          </div>
+          <div className="form-group">
+            <label>Times (comma separated HH:MM)</label>
+            <input type="text" className="input" placeholder="e.g. 08:00, 20:00" value={newMed.times} onChange={e => setNewMed({...newMed, times: e.target.value})} required />
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save Medication</button>
+            <button type="button" className="btn btn-ghost" onClick={() => setShowForm(false)}>Cancel</button>
+          </div>
+        </form>
+      )}
+
+      {loading ? (
+        <SkeletonList rows={2} />
+      ) : meds.length === 0 ? (
+        <div className="empty-state">
+           <div className="empty-state-icon"><Pill size={24} /></div>
+           <h3>No Medications Scheduled</h3>
+           <p>Add your medications to receive WhatsApp reminders.</p>
+        </div>
+      ) : (
+        <div className="alert-list">
+          {meds.map(med => (
+            <div key={med.id} className="alert-row">
+              <div className="alert-row-left">
+                <Pill size={16} className="alert-icon alert-icon--primary" />
+                <div>
+                  <div className="alert-name">{med.name}</div>
+                  <div className="alert-meta">{med.dose}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
+                <span className="badge badge-primary" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Clock size={12} /> {med.times.join(', ')}
+                </span>
+                <button className="btn btn-ghost btn-sm" onClick={() => handleDelete(med.id)} title="Delete" style={{ padding: 4, color: 'var(--danger)' }}>
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

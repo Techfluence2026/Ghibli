@@ -237,6 +237,7 @@ def update_user_details_service(
         "blood_group": request.blood_group,
         "medical_history": request.medical_history,
         "allergies": request.allergies,
+        "timezone": request.timezone,
     }
 
     result = db["users"].update_one(
@@ -267,4 +268,5 @@ def get_me_service(current_user_id) -> MeResponse:
         medical_history=user_doc.get("medical_history"),
         allergies=user_doc.get("allergies"),
         diseases=user_doc.get("diseases"),
+        timezone=user_doc.get("timezone"),
     )
